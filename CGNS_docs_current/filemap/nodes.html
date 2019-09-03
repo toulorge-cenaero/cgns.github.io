@@ -703,9 +703,9 @@ its parent is associated. The value (data field) is a character
 string of enumeration type, i.e., it must take one of a number of
 predefined values. These values are: <tt>Vertex</tt>, <tt>CellCenter</tt>,
 <tt>FaceCenter</tt>, <tt>IFaceCenter</tt>, <tt>JFaceCenter</tt>,
-<tt>KFaceCenter</tt>, or <tt>EdgeCenter</tt>. The strings are case
-sensitive, and an exact match is required. The <tt>GridLocation_t</tt>
-node is optional, and the default is <tt>Vertex</tt>.
+<tt>KFaceCenter</tt>, <tt>EdgeCenter</tt>, or <tt>ElementBased</tt>. 
+The strings are case sensitive, and an exact match is required. 
+The <tt>GridLocation_t</tt> node is optional, and the default is <tt>Vertex</tt>.
 
 <br><br>
 <table cellspacing=0 cellpadding=0 border=0>
@@ -729,7 +729,7 @@ node is optional, and the default is <tt>Vertex</tt>.
 <tr valign=baseline><td>
    <th align=left>Data:<td>
    <td><tt>Vertex</tt>, <tt>CellCenter</tt>, <tt>FaceCenter</tt>, <tt>IFaceCenter</tt>,
-      <tt>JFaceCenter</tt>, <tt>KFaceCenter</tt>, or <tt>EdgeCenter</tt>
+      <tt>JFaceCenter</tt>, <tt>KFaceCenter</tt>, <tt>EdgeCenter</tt>, or <tt>ElementBased</tt>
 <tr valign=baseline><td>
    <th align=left>Children:<td>
    <td>None
@@ -1336,6 +1336,12 @@ have the same size. Field arrays containing different numbers of rind
 must be stored under different <tt>FlowSolution_t</tt> nodes. There
 may be any number of nodes of type <tt>FlowSolution_t</tt> under a
 <tt>Zone_t</tt>.
+
+<p>
+In order to store per-element high-order solutions, the <tt>GridLocation_t</tt> 
+must be equal to <tt>ElementBased</tt> and the <tt>InterpolationOrders</tt> 
+must be specified. Thus, an <tt>ElementBased</tt> location without the 
+<tt>InterpolationOrders</tt> is not allowed.
 
 <p>
 Because the number of field quantities to be stored depends on the
@@ -3112,6 +3118,84 @@ entities in CAD geometry file that make up a CFD family.
    <th align=left>Cardinality:<td>
    <td>0,<i>N</i>
 </table>
+
+<a name="ElementInterpolation"></a>
+<h4><tt>ElementInterpolation_t</tt></h4>
+
+<p>
+<tt>ElementInterpolation_t</tt> nodes define the interpolation basis in use for a 
+specific element type. Only a single node per element type is allowed.
+
+<br><br>
+<table cellspacing=0 cellpadding=0 border=0>
+<caption class=node>Node Attributes
+<br><br>
+<tr valign=baseline><td><tt>&nbsp;&nbsp;&nbsp;</tt>
+   <th align=left>Name:<td><tt>&nbsp;&nbsp;</tt>
+   <td>User defined
+<tr valign=baseline><td>
+   <th align=left>Label:<td>
+   <td><a href="../sids/misc.html#ElementInterpolation"><tt>ElementInterpolation_t</tt></a>
+<tr valign=baseline><td>
+   <th align=left>DataType:<td>
+   <td><tt>I4</tt>
+<tr valign=baseline><td>
+   <th align=left>Dimension:<td>
+   <td>1
+<tr valign=baseline><td>
+   <th align=left>Dimension&nbsp;Values:<td>
+   <td>1
+<tr valign=baseline><td>
+   <th align=left>Data:<td>
+   <td>Element Type
+<tr valign=baseline><td>
+   <th align=left>Children:<td>
+   <td>See <a href="figures/ElementInterpolation.html">ElementInterpolation_t figure</a>
+<tr valign=baseline><td>
+   <th align=left>Cardinality:<td>
+   <td>0,<i>N</i>
+</table>
+
+
+<a name="SolutionInterpolation"></a>
+<h4><tt>SolutionInterpolation_t</tt></h4>
+
+<p>
+<tt>SolutionInterpolation_t</tt> nodes define the interpolation basis in use for a 
+high order solution defined by the triplet (element type, spatial order, temporal order). 
+Only a single node per triplet is allowed.
+
+<br><br>
+<table cellspacing=0 cellpadding=0 border=0>
+<caption class=node>Node Attributes
+<br><br>
+<tr valign=baseline><td><tt>&nbsp;&nbsp;&nbsp;</tt>
+   <th align=left>Name:<td><tt>&nbsp;&nbsp;</tt>
+   <td>User defined
+<tr valign=baseline><td>
+   <th align=left>Label:<td>
+   <td><a href="../sids/misc.html#SolutionInterpolation"><tt>SolutionInterpolation_t</tt></a>
+<tr valign=baseline><td>
+   <th align=left>DataType:<td>
+   <td><tt>I4</tt>
+<tr valign=baseline><td>
+   <th align=left>Dimension:<td>
+   <td>1
+<tr valign=baseline><td>
+   <th align=left>Dimension&nbsp;Values:<td>
+   <td>3
+<tr valign=baseline><td>
+   <th align=left>Data:<td>
+   <td>Element Type, spatial order, temporal orders
+<tr valign=baseline><td>
+   <th align=left>Children:<td>
+   <td>See <a href="figures/SolutionInterpolation.html">SolutionInterpolation_t figure</a>
+<tr valign=baseline><td>
+   <th align=left>Cardinality:<td>
+   <td>0,<i>N</i>
+</table>
+
+
 
 <a name="timedepgroup"></a>
 <h4>Time-Dependent Group</h4>

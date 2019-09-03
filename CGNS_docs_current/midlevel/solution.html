@@ -59,6 +59,8 @@
      <li> <tt><b>cg_sol_ptset_info</b></tt> - Get info about a point set <tt>FlowSolution_t</tt> node
      <li> <tt><b>cg_sol_ptset_read</b></tt> - Read a point set <tt>FlowSolution_t</tt> node
      <li> <tt><b>cg_sol_size</b></tt> - Get the dimensions of a <tt>FlowSolution_t</tt> node
+     <li> <tt><b>cg_sol_interpolation_order_read</b></tt> - Get the interpolation Orders of a <tt>FlowSolution_t</tt> node
+     <li> <tt><b>cg_sol_interpolation_order_write</b></tt> - Create and/or write the interpolation Orders to a <tt>FlowSolution_t</tt> node
      </ul>
 <li> <a href="#flowsolution_array">Flow Solution Data</a>
      <ul>
@@ -143,6 +145,16 @@
                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class=out><i>cgsize_t *dim_vals</i></span>);</b></tt>
     <td align=center valign=baseline>
         <tt><b>r&nbsp;-&nbsp;m</b></tt>
+<tr><td nowrap>
+        <tt><b><span class=out><i>ier</i></span> = cg_sol_interpolation_order_read(<span class=in>int fn</span>, <span class=in>int B</span>, <span class=in>int Z</span>, <span class=in>int S</span>, <span class=out><i>int *spatialOrder</i></span>,<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class=out><i>int *temporalOrder</i></span>);</b></tt>
+    <td align=center valign=baseline>
+        <tt><b>r&nbsp;-&nbsp;m</b></tt>
+<tr><td nowrap>
+        <tt><b><span class=out><i>ier</i></span> = cg_sol_interpolation_order_write(<span class=in>int fn</span>, <span class=in>int B</span>, <span class=in>int Z</span>, <span class=in>int S</span>, <span class=in><i>int spatialOrder</i></span>,<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class=in><i>int temporalOrder</i></span>);</b></tt>
+    <td align=center valign=baseline>
+        <tt><b>-&nbsp;w&nbsp;m</b></tt>
 <tbody>
 <tr><td nowrap>
        <tt><b>call cg_sol_write_f(<span class=in>fn</span>, <span class=in>B</span>, <span class=in>Z</span>, <span class=in>solname</span>, <span class=in>location</span>, <span class=out><i>S</i></span>, <span class=out><i>ier</i></span>)</b></tt>
@@ -205,7 +217,7 @@
    <td>Grid location where the solution is recorded.
        The current admissible locations are <tt>Vertex</tt>,
        <tt>CellCenter</tt>, <tt>IFaceCenter</tt>, <tt>JFaceCenter</tt>,
-       and <tt>KFaceCenter</tt>.
+       <tt>KFaceCenter</tt> and <tt>ElementBased</tt>.
 <tr valign=baseline><td>
    <td><tt>ptset_type</tt><td>
    <td>Type of point set defining the interface in the current solution;
@@ -228,6 +240,12 @@
 <tr valign=baseline><td>
    <td><tt>dim_vals</tt><td>
    <td>The array of <tt>data_dim</tt> dimensions for the solution data.</td>
+<tr valign=baseline><td>
+   <td><tt>spatialOrder</tt><td>
+   <td>Spatial order of the interpolation basis of the solution data.</td>
+<tr valign=baseline><td>
+   <td><tt>temporalOrder</tt><td>
+   <td>Temporal order of the interpolation basis of the solution data.</td>
 <tr valign=baseline><td>
    <td><tt>ier</tt><td>
    <td>Error status.
@@ -264,12 +282,24 @@ and rind data. If a point set patch has been specified,
 the total size of the patch.
 
 <p>
-Acceptable values of <tt>GridLocation_t</tt> are <tt>Vertex</tt>
-and <tt>CellCenter</tt>. If the base cell dimension is 2 or
-greater (surface or volume), then <tt>EdgeCenter</tt> is
+Acceptable values of <tt>GridLocation_t</tt> are <tt>Vertex</tt>,
+<tt>CellCenter</tt> and <tt>ElementBased</tt>. If the base cell dimension 
+is 2 or greater (surface or volume), then <tt>EdgeCenter</tt> is
 also allowed. For 3 dimensional bases, <tt>FaceCenter</tt>, and
 for structured zones, <tt>IFaceCenter</tt>, <tt>JFaceCenter</tt>
-and <tt>KFaceCenter</tt>, are also acceptable.
+and <tt>KFaceCenter</tt>, are also acceptable. Note that <tt>ElementBased</tt>
+location is only valid for <tt>Unstructured</tt> zone type.
+
+<p>
+Both patial and temporal interpolation orders are related to high-order 
+<tt>ElementBased</tt> solution. If the GridLocation is set to <tt>ElementBased</tt> 
+through <tt>cg_sol_write</tt>, it is mandatory to call 
+<tt>cg_sol_interpolation_order_write</tt> to define the interpolation 
+orders before writing the solution fields. When reading the solution, 
+<tt>cg_sol_interpolation_order_read</tt> returns CG_NODE_NOT_FOUND if 
+the interpolation orders have not been found and CG_ERROR if GridLocation is 
+not <tt>ElementBased</tt>.
+
 
 <a name="flowsolution_array"></a>
 <h3>Flow Solution Data</h3>

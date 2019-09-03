@@ -79,6 +79,26 @@
      <li> <tt><b>cg_nmultifam</b></tt> - Get number of family names
      <li> <tt><b>cg_multifam_read</b></tt> - Read multiple family names
      </ul>
+<li> <a href="#ElementInterpolation">Element Interpolation Definition</a>
+     <ul>
+     <li> <tt><b>cg_element_interpolation_read</b></tt> -Read the element interpolation node
+     <li> <tt><b>cg_nelement_interpolation_read</b></tt> - Get number of element interpolation node
+     <li> <tt><b>cg_element_interpolation_points_read</b></tt> - Read the Lagrange parametric points coordinates
+     <li> <tt><b>cg_element_lagrange_interpolation_count</b></tt> - Get number of element interpolation node for specific Element type
+     <li> <tt><b>cg_element_lagrange_interpolation_size</b></tt> - Get the size of the Lagrange parametric points coordinates arrays
+     <li> <tt><b>cg_element_interpolation_write</b></tt> - Write the element interpolation node
+     <li> <tt><b>cg_element_interpolation_points_write</b></tt> - Write the Lagrange parametric points coordinates
+     </ul>
+<li> <a href="#SolutionInterpolation">Solution Interpolation Definition</a>
+     <ul>
+     <li> <tt><b>cg_solution_interpolation_read</b></tt> -Read the solution interpolation node
+     <li> <tt><b>cg_nsolution_interpolation_read</b></tt> - Get number of solution interpolation node
+     <li> <tt><b>cg_solution_interpolation_points_read</b></tt> - Read the Lagrange parametric points coordinates
+     <li> <tt><b>cg_solution_lagrange_interpolation_count</b></tt> - Get number of solution interpolation node for specific (Element type, spatial order, temporal order)
+     <li> <tt><b>cg_solution_lagrange_interpolation_size</b></tt> - Get the size of the Lagrange parametric points coordinates arrays
+     <li> <tt><b>cg_solution_interpolation_write</b></tt> - Write the solution interpolation node
+     <li> <tt><b>cg_solution_interpolation_points_write</b></tt> - Write the Lagrange parametric points coordinates
+     </ul>
 </ul>
 
 <a name="family"></a>
@@ -457,6 +477,241 @@ Note that the family name written <tt>cg_famname_write</tt> is stored in
 a <tt>FamilyName_t</tt> node named <tt>FamilyName</tt> as in previous
 versions. The additional family names written with <tt>cg_multifam_write</tt>
 are stored in <tt>AdditionalFamilyName_t</tt> nodes.
+
+
+
+
+
+<a name="ElementInterpolation"></a>
+<h3>Element Interpolation</h3>
+
+<i>Node</i>: <tt>ElementInterpolation_t</tt>
+             (<a href="../sids/misc.html#ElementInterpolation">SIDS</a>,
+              <a href="../filemap/nodes.html#ElementInterpolation">File Mapping</a>)
+
+<br><br>
+<table width=100% cellspacing=0 cellpadding=5 border rules=groups
+       bgcolor="#f5f5f0">
+<colgroup width=90%>
+<colgroup>
+<thead>
+<tr><th align=left scope=col width=90%>Functions
+    <th scope=col>Modes
+<tbody>
+<tr><td nowrap>
+        <tt><b><span class=out><i>ier</i></span> = cg_element_interpolation_read(<span class=in>int fn</span>, <span class=in>int B</span>, <span class=in>int Fam</span>, <span class=in>int en</span>,<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class=out><i>char *einterpName</i></span>, <span class=out><i>ElementType_t *et</i></span>);</b></tt>
+    <td align=center valign=baseline>
+        <tt><b>r&nbsp;-&nbsp;m</b></tt>
+<tr><td nowrap>
+        <tt><b><span class=out><i>ier</i></span> = cg_nelement_interpolation_read(<span class=in>int fn</span>, <span class=in>int B</span>, <span class=in>int Fam</span>, <span class=out><i>int *nElementInterpolations</i></span>);</b></tt>
+    <td align=center valign=baseline>
+        <tt><b>r&nbsp;-&nbsp;m</b></tt>
+<tr><td nowrap>
+        <tt><b><span class=out><i>ier</i></span> = cg_element_interpolation_points_read(<span class=in>int fn</span>, <span class=in>int B</span>, <span class=in>int Fam</span>, <span class=in>int en</span>,<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class=out><i>double *pu</i></span>, <span class=out><i>double *pv</i></span>, <span class=out><i>double *pw</i></span>);</b></tt>
+    <td align=center valign=baseline>
+        <tt><b>r&nbsp;-&nbsp;m</b></tt>
+<tr><td nowrap>
+        <tt><b><span class=out><i>ier</i></span> = cg_element_lagrange_interpolation_count(<span class=in>int fn</span>, <span class=in>int B</span>, <span class=in>int Fam</span>,<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class=in>ElementType_t et</span>, <span class=out><i>int *cnt</i></span>);</b></tt>
+    <td align=center valign=baseline>
+        <tt><b>r&nbsp;-&nbsp;m</b></tt>
+<tr><td nowrap>
+        <tt><b><span class=out><i>ier</i></span> = cg_element_lagrange_interpolation_size(<span class=in>ElementType_t et</span>, <span class=out><i>int *sz</i></span>);</b></tt>
+    <td align=center valign=baseline>
+        <tt><b>r&nbsp;-&nbsp;m</b></tt>
+<tbody>
+<tr><td nowrap>
+        <tt><b><span class=out><i>ier</i></span> = cg_element_interpolation_write(<span class=in>int fn</span>, <span class=in>int B</span>, <span class=in>int Fam</span>,<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class=in>char *einterpName</span>, <span class=in>ElementType_t et</span>, <span class=out><i>int *en</i></span>);</b></tt>
+    <td align=center valign=baseline>
+        <tt><b>-&nbsp;w&nbsp;m</b></tt>
+<tr><td nowrap>
+        <tt><b><span class=out><i>ier</i></span> = cg_element_interpolation_points_write(<span class=in>int fn</span>, <span class=in>int B</span>, <span class=in>int Fam</span>, <span class=in>int en</span>,<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class=in>double *pu</span>, <span class=in>double *pv</span>, <span class=in>double *pw</span>);</b></tt>
+    <td align=center valign=baseline>
+        <tt><b>-&nbsp;w&nbsp;m</b></tt>
+</table>
+
+<br>
+<b><span class=in>Input</span>/<span class=out><i>Output</i></span></b>
+
+<br><br>
+<table cellspacing=0 cellpadding=0 noborder>
+<tr valign=baseline><td><tt>&nbsp;&nbsp;&nbsp;</tt>
+   <td><tt>fn</tt><td><tt>&nbsp;&nbsp;</tt>
+   <td>CGNS file index number.
+<tr valign=baseline><td>
+   <td><tt>B</tt><td>
+   <td>Base index number, where 1 &le; <tt>B</tt> &le; <tt>nbases</tt>.
+<tr valign=baseline><td>
+   <td><tt>Fam</tt><td>
+   <td>Family index number, where 1 &le; <tt>Fam</tt> &le; <tt>nfamilies</tt>.
+<tr valign=baseline><td>
+   <td><tt>en</tt><td>
+   <td>Element Interpolation index number, where 1 &le; <tt>en</tt> &le; <tt>nElementInterpolations</tt>.
+<tr valign=baseline><td><tt>&nbsp;&nbsp;&nbsp;</tt>
+   <td><tt>einterpName</tt><td><tt>&nbsp;&nbsp;</tt>
+   <td>Node name.
+<tr valign=baseline><td>
+   <td><tt>et</tt><td>
+   <td>Element Type.
+<tr valign=baseline><td>
+   <td><tt>nElementInterpolations</tt><td>
+   <td>Number of element Interpolation nodes.
+<tr valign=baseline><td>
+   <td><tt>pu</tt><td>
+   <td>pointer to 1<sup>st</sup> parametric coordinates. Needs to be allocated if wanted. See <tt>cg_element_lagrange_interpolation_size</tt>.
+<tr valign=baseline><td>
+   <td><tt>pv</tt><td>
+   <td>pointer to 2<sup>nd</sup> parametric coordinates. Needs to be allocated if wanted. See <tt>cg_element_lagrange_interpolation_size</tt>.
+<tr valign=baseline><td>
+   <td><tt>pw</tt><td>
+   <td>pointer to 3<sup>rd</sup> parametric coordinates. Needs to be allocated if wanted. See <tt>cg_element_lagrange_interpolation_size</tt>.
+<tr valign=baseline><td>
+   <td><tt>sz</tt><td>
+   <td>Number of parametric nodes required for the specified Element Type. (equivalent to <tt>cg_npe</tt>).
+<tr valign=baseline><td>
+   <td><tt>cnt</tt><td>
+   <td>Number of element Interpolation nodes corresponding to the specified Element type (i.e. its cardinality). Should be 0 or 1.
+<tr valign=baseline><td>
+   <td><tt>ier</tt><td>
+   <td>Error status.
+</table>
+
+<p>
+Note that <tt>cg_solution_interpolation_points_read</tt> returns CG_NODE_NOT_FOUND if the <tt>InterpolationPoints</tt> node does not exists.
+
+<p>
+
+
+
+
+<a name="SolutionInterpolation"></a>
+<h3>Solution Interpolation</h3>
+
+<i>Node</i>: <tt>SolutionInterpolation_t</tt>
+             (<a href="../sids/misc.html#SolutionInterpolation">SIDS</a>,
+              <a href="../filemap/nodes.html#SolutionInterpolation">File Mapping</a>)
+
+<br><br>
+<table width=100% cellspacing=0 cellpadding=5 border rules=groups
+       bgcolor="#f5f5f0">
+<colgroup width=90%>
+<colgroup>
+<thead>
+<tr><th align=left scope=col width=90%>Functions
+    <th scope=col>Modes
+<tbody>
+<tr><td nowrap>
+        <tt><b><span class=out><i>ier</i></span> = cg_solution_interpolation_read(<span class=in>int fn</span>, <span class=in>int B</span>, <span class=in>int Fam</span>, <span class=in>int sn</span>,<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class=out><i>char *sinterpName</i></span>, <span class=out><i>ElementType_t *et</i></span>, <span class=out><i>int *os</i></span>, <span class=out><i>int *ot</i></span>, 
+               <span class=out><i>InterpolationType *it</i></span>);</b></tt>
+    <td align=center valign=baseline>
+        <tt><b>r&nbsp;-&nbsp;m</b></tt>
+<tr><td nowrap>
+        <tt><b><span class=out><i>ier</i></span> = cg_nsolution_interpolation_read(<span class=in>int fn</span>, <span class=in>int B</span>, <span class=in>int Fam</span>, <span class=out><i>int *nSolutionInterpolations</i></span>);</b></tt>
+    <td align=center valign=baseline>
+        <tt><b>r&nbsp;-&nbsp;m</b></tt>
+<tr><td nowrap>
+        <tt><b><span class=out><i>ier</i></span> = cg_solution_interpolation_points_read(<span class=in>int fn</span>, <span class=in>int B</span>, <span class=in>int Fam</span>, <span class=in>int sn</span>,<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class=out><i>double *pu</i></span>, <span class=out><i>double *pv</i></span>, <span class=out><i>double *pw</i></span>, <span class=out><i>double *pt</i></span>);</b></tt>
+    <td align=center valign=baseline>
+        <tt><b>r&nbsp;-&nbsp;m</b></tt>
+<tr><td nowrap>
+        <tt><b><span class=out><i>ier</i></span> = cg_solution_lagrange_interpolation_count(<span class=in>int fn</span>, <span class=in>int B</span>, <span class=in>int Fam</span>,<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class=in>ElementType_t et</span>, <span class=in>int os</span>, <span class=in>int ot</span>, <span class=out><i>int *cnt</i></span>);</b></tt>
+    <td align=center valign=baseline>
+        <tt><b>r&nbsp;-&nbsp;m</b></tt>
+<tr><td nowrap>
+        <tt><b><span class=out><i>ier</i></span> = cg_solution_lagrange_interpolation_size(<span class=in>ElementType_t et</span>, <span class=in>int os</span>, <span class=in>int ot</span>, 
+        <span class=out><i>int *sz</i></span>);</b></tt>
+    <td align=center valign=baseline>
+        <tt><b>r&nbsp;-&nbsp;m</b></tt>
+<tbody>
+<tr><td nowrap>
+        <tt><b><span class=out><i>ier</i></span> = cg_solution_interpolation_write(<span class=in>int fn</span>, <span class=in>int B</span>, <span class=in>int Fam</span>,<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class=in>char *sinterpName</span>, <span class=in>ElementType_t et</span>,  <span class=in>int os</span>, <span class=in>int ot</span>, 
+               <span class=in>InterpolationType it</span>, <span class=out><i>int *sn</i></span>);</b></tt>
+    <td align=center valign=baseline>
+        <tt><b>-&nbsp;w&nbsp;m</b></tt>
+<tr><td nowrap>
+        <tt><b><span class=out><i>ier</i></span> = cg_solution_interpolation_points_write(<span class=in>int fn</span>, <span class=in>int B</span>, <span class=in>int Fam</span>, <span class=in>int sn</span>,<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class=in>double *pu</span>, <span class=in>double *pv</span>, <span class=in>double *pw</span>, <span class=in>double *pt</span>);</b></tt>
+    <td align=center valign=baseline>
+        <tt><b>-&nbsp;w&nbsp;m</b></tt>
+</table>
+
+<br>
+<b><span class=in>Input</span>/<span class=out><i>Output</i></span></b>
+
+<br><br>
+<table cellspacing=0 cellpadding=0 noborder>
+<tr valign=baseline><td><tt>&nbsp;&nbsp;&nbsp;</tt>
+   <td><tt>fn</tt><td><tt>&nbsp;&nbsp;</tt>
+   <td>CGNS file index number.
+<tr valign=baseline><td>
+   <td><tt>B</tt><td>
+   <td>Base index number, where 1 &le; <tt>B</tt> &le; <tt>nbases</tt>.
+<tr valign=baseline><td>
+   <td><tt>Fam</tt><td>
+   <td>Family index number, where 1 &le; <tt>Fam</tt> &le; <tt>nfamilies</tt>.
+<tr valign=baseline><td>
+   <td><tt>sn</tt><td>
+   <td>Solution Interpolation index number, where 1 &le; <tt>sn</tt> &le; <tt>nSolutionInterpolations</tt>.
+<tr valign=baseline><td><tt>&nbsp;&nbsp;&nbsp;</tt>
+   <td><tt>sinterpName</tt><td><tt>&nbsp;&nbsp;</tt>
+   <td>Node name.
+<tr valign=baseline><td>
+   <td><tt>et</tt><td>
+   <td>Element Type.
+<tr valign=baseline><td>
+   <td><tt>os</tt><td>
+   <td>Spatial order of interpolation.
+<tr valign=baseline><td>
+   <td><tt>ot</tt><td>
+   <td>Temporal order of interpolation.
+<tr valign=baseline><td>
+   <td><tt>nSolutionInterpolations</tt><td>
+   <td>Number of solution Interpolation nodes.
+<tr valign=baseline><td>
+   <td><tt>it</tt><td>
+   <td>Name of the Interpolation basis.
+<tr valign=baseline><td>
+<tr valign=baseline><td>
+   <td><tt>pu</tt><td>
+   <td>pointer to 1<sup>st</sup> parametric coordinates. Needs to be allocated if wanted. See <tt>cg_solution_lagrange_interpolation_size</tt>.
+<tr valign=baseline><td>
+   <td><tt>pv</tt><td>
+   <td>pointer to 2<sup>nd</sup> parametric coordinates. Needs to be allocated if wanted. See <tt>cg_solution_lagrange_interpolation_size</tt>.
+<tr valign=baseline><td>
+   <td><tt>pw</tt><td>
+   <td>pointer to 3<sup>rd</sup> parametric coordinates. Needs to be allocated if wanted. See <tt>cg_solution_lagrange_interpolation_size</tt>.
+<tr valign=baseline><td>
+   <td><tt>pt</tt><td>
+   <td>pointer to the temporal parametric location. Needs to be allocated if wanted. See <tt>cg_solution_lagrange_interpolation_size</tt>.
+<tr valign=baseline><td>
+   <td><tt>sz</tt><td>
+   <td>Number of parametric nodes required for the specified triplet (Element type, spatial order, temporal order).
+<tr valign=baseline><td>
+   <td><tt>cnt</tt><td>
+   <td>Number of solution Interpolation nodes corresponding to the specified Element type (i.e. its cardinality). Should be 0 or 1.
+<tr valign=baseline><td>
+   <td><tt>ier</tt><td>
+   <td>Error status.
+</table>
+
+<p>
+
+
+Note that <tt>cg_solution_interpolation_points_read</tt> returns CG_NODE_NOT_FOUND if the <tt>InterpolationPoints</tt> node does not exists.
+
+
+
+
+
+
 
 <p>
 <hr size=4 width=75%>

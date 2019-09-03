@@ -504,6 +504,18 @@ rind plane on each side in the file to an 8 &times 8 array in memory
         <tt><b><span class=out><i>ier</i></span> = cg_npe(<span class=in>ElementType_t type</span>, <span class=out><i>int *npe</i></span>);</b></tt>
     <td align=center valign=baseline>
         <tt><b>r&nbsp;w&nbsp;m</b></tt>
+<tr><td nowrap>
+        <tt><b><span class=out><i>ier</i></span> = cg_npe_ho(<span class=in>ElementType_t basicType</span>, <span class=in>int order</span>, <span class=out><i>int *npe</i></span>);</b></tt>
+    <td align=center valign=baseline>
+        <tt><b>r&nbsp;w&nbsp;m</b></tt>
+<tr><td nowrap>
+        <tt><b><span class=out><i>ier</i></span> = cg_element_dimension(<span class=in>ElementType_t type</span>, <span class=out><i>int *edim</i></span>);</b></tt>
+    <td align=center valign=baseline>
+        <tt><b>r&nbsp;w&nbsp;m</b></tt>
+<tr><td nowrap>
+        <tt><b><span class=out><i>ier</i></span> = cg_element_basic_element_type(<span class=in>ElementType_t type</span>, <span class=out>ElementType_t *basicType</span>);</b></tt>
+    <td align=center valign=baseline>
+        <tt><b>r&nbsp;w&nbsp;m</b></tt>
 <tbody>
 <tr><td nowrap>
         <tt><b>call <span class=cgf>cg_section_write_f</span>(<span class=in>fn</span>, <span class=in>B</span>, <span class=in>Z</span>, <span class=in>ElementSectionName</span>, <span class=in>type</span>,<br>
@@ -646,6 +658,12 @@ rind plane on each side in the file to an 8 &times 8 array in memory
 <tr valign=baseline><td>
    <td><tt>npe</tt><td>
    <td>Number of nodes for an element of type <tt>type</tt>.
+<tr valign=baseline><td>
+   <td><tt>edim</tt><td>
+   <td>Dimension of the parametric space of an element of type <tt>type</tt>.
+<tr valign=baseline><td>
+   <td><tt>basicType</tt><td>
+   <td>Basic type of an element of type <tt>type</tt>. (ex: TRI_10 &rarr; TRI_3)
 <tr valign=baseline><td>
    <td><tt>ier</tt><td>
    <td>Error status.

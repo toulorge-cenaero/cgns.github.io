@@ -275,7 +275,8 @@ it is an enumeration type.
     IFaceCenter,
     JFaceCenter,
     KFaceCenter,
-    EdgeCenter ) ;
+    EdgeCenter,
+    ElementBased ) ;
 </pre>
 
 <p>
@@ -292,6 +293,12 @@ any coordinate direction.
 These are also appropriate for entities associated with a face, but not
 located at a specific place on the face.
 <tt>EdgeCenter</tt> is the center of an edge.
+For unstructured zones, <tt>ElementBased</tt> refers to per-element data 
+allowing the association of numerous datas for each elements, depending on 
+their <tt>ElementType_t</tt>. The main objective is to allow the Implementation 
+of high-order solutions per-element.
+
+<p>
 See <a href="conv.html#structgrid">Structured Grid Notation and Indexing
 Conventions</a> for descriptions of cells, faces and edges.
 
