@@ -538,9 +538,20 @@ Consequently:
      TETRA_16, TETRA_20, PYRA_21, PYRA_29, PYRA_30,
      PENTA_24, PENTA_38, PENTA_40, HEXA_32, HEXA_56, HEXA_64 );
 </pre>
+
 The conventions for element numbering for the various supported types
 are described in <a href="conv.html#unstructgrid">Unstructured Grid
 Element Numbering Conventions</a>.
+
+However, in case an alternative location for the element control points are 
+specified, the actual elements are defined as before by listing the indices 
+in the coordinate table, with the notable change that the order will correspond 
+to the control point coordinates specified in the corresponding <tt>ElementInterpolation_t</tt> 
+block, in the related <tt>Family_t</tt> block 
+(see <a href="misc.html#ElementInterpolation">12.12 Element Interpolation Structure Definition</a>). 
+If a specific element type is not found amongst these leafs, the standard 
+convention is supposed.
+
 
 <a name="ElementConnectivity"></a>
 <p>
@@ -1368,7 +1379,8 @@ as stated in the table bellow. Thus, <tt>NPE[TRI_3,3]</tt> returns 10.
 <p>
 <i>Remark :</i> the function NPE could take any derived type such as TRI_10 or QUAD_16. 
 The table below, only shows the correspondance between the Basic type and the node count. 
-The only valuable order taken into account is the one given as a parameter.
+The only valuable order taken into account is the one given as a parameter. For more information 
+about the function spaces of each elements, see <a href="conv.html#high_order">3.5 High order interpolation</a>
 
 <center>
 <table cellspacing=0 cellpadding=3 border=0>
@@ -1382,7 +1394,7 @@ The only valuable order taken into account is the one given as a parameter.
   <tr align=center><td>HEXA_8</td><td>(o+1)(o+1)(o+1)</td></tr>
   <tr align=center><td>TETRA_4</td><td>(o+1)(o+2)(o+3)/6</td></tr>
   <tr align=center><td>PENTA_6</td><td>(o+1)(o+1)(o+2)/2</td></tr>
-  <tr align=center><td>PYRA_5</td><td><a href="../sids/conv.html#unstructgrid">Element Numbering Conventions</a></td></tr>
+  <tr align=center><td>PYRA_5</td><td>(o+1)(o+2)(2o+3)/6</td></tr>
   <tr><td colspan="2"><hr width="100%" noshade></td></tr>
 </tbody>
 </table>

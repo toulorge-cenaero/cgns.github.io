@@ -5,6 +5,7 @@
 <meta http-equiv="Content-Style-Type" content="text/css">
 <link href="sids.css" rel="stylesheet" type="text/css">
 <title> CGNS Standard Interface Data Structures - Conventions </title>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
 </head>
 
 <body text="#000000" bgcolor="#FFFFFF" link="#0000EE" vlink="#551A8B" alink="#FF0000">
@@ -57,6 +58,7 @@
      <li> <a href="#unst_example">3.3.4 Unstructured Grid Example</a>
      </ul>
 <li> <a href="#interfaces">3.4 Multizone Interfaces</a>
+<li> <a href="#high_order">3.5 High order interpolation</a>
 </ul>
 
 <a name="notation"></a>
@@ -3247,6 +3249,391 @@ outlining holes and at zone boundaries.
 For the mismatched abutting and overset interfaces in the above figure,
 the left zone plays the role of receiver zone and the right plays the
 role of donor zone.
+
+<p>
+
+
+<a name="high_order"></a>
+<h3>3.5 High order interpolation</h3>
+
+The CGNS standard allows the user to specify their own interpolation approach 
+for both elements and solution. The basic principles are: <p>
+<ol>
+<li> The element coordinate system per element type is a fixed convention;</li>
+<li> For the solution interpolation per each element type and interpolation 
+     order, a separate interpolation block is added which provides one out 
+     of three choices:</li>
+<ul> the set of control points for Lagrange interpolants</ul>
+<ul> the maximum degree of a Pascal polynomial space defined in parametric 
+     coordinates</ul>
+<ul>the maximum degree of a Pascal polynomial space defined in Cartesian 
+     (non-parametric) coordinates</ul>
+The first two cover parametric interpolation, whereas the last covers modal/Cartesian 
+     interpolation
+</li>
+<li> The mesh is always defined using interpolations in parametric space, by specifying 
+     the set of control points. The standard will only allow element types defined up 
+     to now in order not to modify the element connectivity description.</li>
+<li> The interpolation is not supposed to be the same for the geometry as for the 
+     solution, unless explicitly specified that way.</li>
+<li> In addition to the spatial coordinates, also time can be used as an independent 
+     variable.</li>
+</ol>
+
+<p>
+The following sections describe how interpolations are specified. 
+
+
+<h4>3.5.1 Interpolation type enum InterpolationType_t </h4>
+
+<tt>InterpolationType_t</tt> specifies how the high order interpolants for the solution 
+are defined. <tt>InterpolationType_t</tt> can take four values:
+<ul>
+<li> <tt>ParametricLagrange</tt> corresponds to a Lagrange interpolation, 
+     based upon a set of specified control point coordinates in parametric 
+     space for a standard interpolation space. 
+<li> <tt>ParametricMonomialsPascal</tt> corresponds to modal interpolation 
+     functions in parametric coordinates, based on monomials according to the 
+     classical Pascal sets. 
+<li> <tt>CartesianMonomialsPascal</tt> corresponds to modal interpolation 
+     functions in a Cartesian coordinate system, centered on the element and 
+     parallel to the main axes. The interpolation functions are based on monomials 
+     according to the classical Pascal sets.
+<li> <tt>IsoParametric</tt> corresponds to using the same interpolation functions 
+     for the solution as for the mesh.
+</ul>
+
+<p>
+The exact definition of the enum is given in the <a href="misc.html#InterpolationType">
+Solution Interpolation Structure Definition section</a>.
+
+
+
+<h4>3.5.2 High order parametric interpolation </h4>
+
+The parametric interpolation conventions can be used for specifying both curved elements, 
+thereby superseding the standard conventions, as for the solution.
+<p>
+
+<h5>Standard coordinate systems for parametric interpolation</h5>
+
+The parametric coordinate system is defined per element, and are defined following the figure 
+below:
+<p>
+<table cellspacing=0 cellpadding=0 border=0>
+<tr valign=top><td>
+   <img src="conv.figs/ho_coords_systems.png" width="80%" alt="ho_coords_systems"><br>
+<tr valign=top halign=center><td>
+   <center><br><tt>Figure: Parametric coordinate systems</tt></center><br>
+</table>
+
+<p>
+For space-time computations, the coordinate system is extended with one dimension, by the tensor 
+product of the spatial coordinate system, with the parameter interval \(\left[-1,1\right]\) in parametric 
+time \(\tau\). The latter corresponds to the physical time slab \(\left[T_n,T_{n+1}\right]\).
+
+<p>
+
+<h5>Parametric interpolation by specification of Lagrange control points</h5>
+
+Both solution and element shape can be specified using this formulation. For elements, this convention allows 
+to redefine the position and order of the control points with respect to the standard definitions for each 
+of the <tt>ElementType_t</tt> described in <a href="#unstructgrid">section 3.3 Unstructured Grid Element Numbering 
+Conventions</a>. The standard definition will continue to be used in case no interpolation is explicitly 
+introduced.
+<p>
+
+Lagrange interpolants require next to the specification of control point locations also the specification 
+of the standard function space \(\mathcal{V}\). Its cardinality N defines the number of control points 
+that need to be specified. 
+<p>
+We denote the Lagrange interpolant corresponding to control point \(\mathbf{u}_i\)  as \(\lambda_i\) . 
+Furthermore, we need an arbitrary set of base functions for \(\mathcal{V}\), such that \(\mathcal{V} = span(\Psi_j, j = 0,\cdots,N-1)\). 
+The Lagrange interpolants are then found as a linear combination of the base functions :
+
+$$ \lambda_i(\mathbf{u}) = \sum_j{\mathbf{V}_{ij}^{-1} \Psi_j(\mathbf{u})}$$
+
+Using the inverse of the Vandermonde matrix \(\mathbf{V}\) associated to the control points \(\mathbf{u}_i\) and the basis \(\Psi\) :
+
+$$ \mathbf{V}_{ij} = \Psi_j(\mathbf{u}_i)$$
+
+The (spatial) parametric function spaces \(\mathcal{V}_p(u,v,w)\) for each element type and order <tt>p</tt>, 
+which support the Lagrange type interpolation are listed in table bellow. Next to the standard <q>complete</q> element, 
+also incomplete, or so-called serendipity elements are supported in higher dimensions. A first type of serendipity 
+element only specifies control points on the edges. In three dimensional elements of sufficient order, a second 
+serendipity interpolation can be defined which only excludes control points which are internal to the element. 
+This classification is not univocal and in particular at lower order several elements can be classified in 
+multiple classes. The element type tags are described in <a href="#unstructgrid">section 3.3 Unstructured 
+Grid Element Numbering Conventions</a>.
+<p>
+
+<center>
+<table frame=hsides rules=all style="caption-side:bottom;">
+<caption>Table: List of Lagrange functional spaces per element and interpolation type. 
+The base type and order - denoted p - are specified for solution interpolation, whereas the full element type is used to classify element interpolation</caption>
+<thead>
+<tr >
+<th colspan="2">Element</th>
+<th colspan="3">Function space \( \mathcal{V}_p(u,v,w)\)</th>
+</tr>
+<tr >
+<th >Type</th>
+<th >Base Type</th>
+<th >Complete</th>
+<th >Edge Serendipity</th>
+<th >Face Serendipity</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">Line</td>
+<td style="text-align: center;">BAR_2</td>
+<td style="text-align: center;">
+\(\mathcal{L}_p(u)\)
+<p>\( N = p+1 \)
+</td>
+<td style="text-align: center;">n/a</td>
+<td style="text-align: center;">n/a</td>
+</tr>
+<tr>
+<td style="text-align: center;">Quad</td>
+<td style="text-align: center;">QUAD_4</td>
+<td style="text-align: center;">
+\(\mathcal{Q}^2_p(u,v)\)
+<p>\( N = (p+1)^2 \)
+</td>
+<td style="text-align: center;">
+\( (\mathcal{L}_p(u) \otimes
+\mathcal{L}_1(v) \oplus (
+\mathcal{L}_p(v) \otimes
+\mathcal{L}_1(u)) ) \)
+<p>\( N = 4p \)
+</td>
+<td style="text-align: center;">n/a</td>
+</tr>
+<tr>
+<td style="text-align: center;">Hexa</td>
+<td style="text-align: center;">HEXA_8</td>
+<td style="text-align: center;">
+\(\mathcal{Q}^3_p(u,v,w)\)
+<p>\( N = (p+1)^3 \)
+</td>
+<td style="text-align: center;">&nbsp;</td>
+<td style="text-align: center;">&nbsp;</td>
+</tr>
+<tr>
+<td style="text-align: center;">Triangle</td>
+<td style="text-align: center;">TRI_3</td>
+<td style="text-align: center;">
+\(\mathcal{P}^2_p(u,v)\)
+<p>\( N = (p+1)(p+2)/2 \)
+</td>
+<td style="text-align: center;">&nbsp;</td>
+<td style="text-align: center;">n/a</td>
+</tr>
+<tr>
+<td style="text-align: center;">Tetra</td>
+<td style="text-align: center;">TETRA_4</td>
+<td style="text-align: center;">
+\(\mathcal{P}^3_p(u,v,w)\)
+<p>\( N = (p+1)(p+2)(p+3)/6 \)
+</td>
+<td style="text-align: center;">&nbsp;</td>
+<td style="text-align: center;">&nbsp;</td>
+</tr>
+<tr>
+<td style="text-align: center;">Prism</td>
+<td style="text-align: center;">PENTA_6</td>
+<td style="text-align: center;">
+\(\mathcal{P}^2_p(u,v) \otimes \mathcal{L}_p(w)\)
+<p>\( N = (p+1)^2(p+2)/2 \)
+</td>
+<td style="text-align: center;">&nbsp;</td>
+<td style="text-align: center;">&nbsp;</td>
+</tr>
+<tr>
+<td style="text-align: center;">Pyramid</td>
+<td style="text-align: center;">PYRA_5</td>
+<td style="text-align: center;"><a href="https://doi.org/10.1007/s10915-009-9334-9">Bergot &amp; al. 2010</a></td>
+<td style="text-align: center;">&nbsp;</td>
+<td style="text-align: center;">&nbsp;</td>
+</tr>
+</tbody>
+</table>
+</center>
+
+<p>
+In which we use direct sums \(\oplus\) and products \(\otimes\) of the following  standard spaces of order <tt>p</tt>:
+<p>
+
+The linear space : \(\mathcal{L}_p = span(u^i , 0 \leq i \leq p) \)
+
+<p>
+Tensor product spaces, \(N = (p+1)^d\)
+<ul>
+<li> \(\mathcal{Q}^2_p(u,v) = \mathcal{L}_p(u) \otimes \mathcal{L}_p(v) = span(u^i v^j , 0\leq i+j \leq p) \)
+<li> \(\mathcal{Q}^3_p(u,v,w) = \mathcal{L}_p(u) \otimes \mathcal{L}_p(v) \otimes \mathcal{L}_p(w) = span (u^i v^j w^k, 0 \leq i+j+k \leq p) \)
+</ul>
+
+<p>
+Pascal triangle/tetrahedron, \(N = (p+1) \cdots (p+d)/d!\)
+<ul>
+<li> \( \mathcal{P}^2_p(u,v) = span (u^i v^j, 0 \leq i+j \leq p) \)
+<li> \( \mathcal{P}^3_p(u,v,w) = span (u^i v^j w^k, 0 \leq i+j+k \leq p) \)
+</ul>
+
+
+<p>
+Note that in case the function space is defined in space-time (eg. for ALE meshes), the complete functional space is given by:
+
+<ul>
+<li> \( \mathcal{V}_{p,q}(u,v,w,t) = \mathcal{V}_p(u,v,w) \otimes \mathcal{L}_q(t) \)
+</ul>
+
+<p>
+where <tt>p</tt> and <tt>q</tt> are the spatial and temporal order respectively.
+
+<p>
+
+<h5>Parametric modal interpolation</h5>
+
+<i> Note : this type of interpolation only applies to solutions </i>
+<p>
+
+For solutions, also modal interpolation is allowed. The interpolation functions are based on an ordered 
+set of monomials spanning the Pascal spaces. According to the underlying dimension, these are given by:
+
+<ul>
+<li> 1D: the monomials \( 1, u, u^2, u^3, \cdots, u^p \)</li>
+<li> 2D: The Pascal triangle ordered in the following way 
+<pre>
+for(int i = 0 ; i &lt;= p ; i++)
+   for(int j = 0 ; j &lt;= i ; j++)
+      f[idx++] = u<sup>(i-j)</sup> v<sup>j</sup>
+</pre> </li>
+<li> 3D: the Pascal tetrahedron ordered in the following way
+<pre>
+for(int i = 0 ; i &lt;= p ; i++)
+   for(int j = 0 ; j &lt;= i ; j++)
+      for(int k = 0 ; k &lt;= i-j ; k++)
+         f[idx++] = u<sup>(i-j-k)</sup> v<sup>k</sup> w<sup>j</sup>
+</pre></li>
+</ul>
+
+The above covers the purely spatial interpolation. In case the function space is defined in space-time 
+(eg. for ALE meshes), the complete functional spaces is given by:
+
+<ul>
+<li> 1D in space plus time: the spatial monomials multiplied by monomials in (parametric) time \(\tau\), 
+ordered in the following way:
+<pre>
+for(int h = 0 ; h &lt;= q ; h++)
+   for(int i = 0 ; i &lt;= p ; i++)
+      f[idx++] = &tau;<sup>h</sup> u<sup>i</sup>
+</pre> </li>
+<li> 2D in space plus time: The spatial Pascal triangle multiplied by monomials in (parametric) time \(\tau\), 
+ordered in the following way:
+<pre>
+for(int h = 0 ; h &lt;= q ; h++)
+   for(int i = 0 ; i &lt;= p ; i++)
+      for(int j = 0 ; j &lt;= i ; j++)
+         f[idx++] = &tau;<sup>h</sup> u<sup>(i-j)</sup> v<sup>j</sup>
+</pre> </li>
+<li> 3D: the spatial Pascal tetrahedron multiplied by monomials in (parametric) time \(\tau\),  ordered in 
+the following way:
+<pre>
+for(int h = 0 ; h &lt;= q ; h++)
+   for(int i = 0 ; i &lt;= p ; i++)
+      for(int j = 0 ; j &lt;= i ; j++)
+         for(int k = 0 ; k &lt;= i-j ; k++)
+            f[idx++] = &tau;<sup>h</sup> u<sup>(i-j-k)</sup> v<sup>k</sup> w<sup>j</sup>
+</pre> </li>
+</ul>
+
+<i>Note that this space-time formulation reverts to the purely spatial interpolation - including the ordering - 
+for the (default) temporal order \(q = 0\).</i>
+
+
+
+<h4>3.5.3 Cartesian modal interpolation </h4>
+
+<i> Note : Cartesian modal interpolation only applies to solutions. </i>
+<p>
+
+<h5>Computation of the element coordinate system</h5>
+
+We specify a local Cartesian coordinate system per element, based upon the (simplified) barycenter. 
+Say we note the global coordinates \(R = X e_x+Y e_y+ Z e_z\), we proceed by first computing the element 
+barycenter \(\mathbf{R}^e\)  as the arithmetic mean of the locations of the principal vertices, ie. the nodes 
+corresponding to those of the associated linear element:
+
+$$ \mathbf{R}^e = \frac{1}{N} \sum_{i=1}^{N} {\mathbf{R}^e_i}$$
+
+The element local coordinates are then defined as \(\mathbf{r} = \mathbf{R} - \mathbf{R}^e\); we then 
+use the notation \(\mathbf{r} = x e_x + y e_y + z e_z\).
+Correspondingly, an element-local origin of the time dimension is defined as mid-point of the relevant 
+physical time slab \([T_n,T_{n+1}]\), such that \(t = T-(T_n+T_{n+1})/2\).
+
+
+<h5>Cartesian modal interpolants</h5>
+
+The interpolation space for Cartesian modal interpolations follows the same approach as for parametric 
+modal interpolation and is based on ordered sets of monomials spanning the standard Pascal spaces. Here. 
+these are monomials in the element-local Cartesian coordinates x,y,z and (phyiscal) time t, though 
+(rather than coordinates in parametric space and time). The (ordered) sets of monomials for a purely 
+spatial interpolation are thus given by:
+
+
+<ul>
+<li> 1D: the monomials \( 1, x, x^2, x^3, \cdots, x^p \)</li>
+<li> 2D: The Pascal triangle ordered in the following way 
+<pre>
+for(int i = 0 ; i &lt;= p ; i++)
+   for(int j = 0 ; j &lt;= i ; j++)
+      f[idx++] = x<sup>(i-j)</sup> y<sup>j</sup>
+</pre> </li>
+<li> 3D: the Pascal tetrahedron ordered in the following way
+<pre>
+for(int i = 0 ; i &lt;= p ; i++)
+   for(int j = 0 ; j &lt;= i ; j++)
+      for(int k = 0 ; k &lt;= i-j ; k++)
+         f[idx++] = x<sup>(i-j-k)</sup> y<sup>k</sup> z<sup>j</sup>
+</pre></li>
+</ul>
+
+Again, a space-time interpolation can be obtained by multiplying with temporal monomials, 
+which yields the following sets of (ordered) monomials:
+
+<ul>
+<li> 1D in space plus time: the spatial monomials multiplied by monomials in (parametric) time, 
+ordered in the following way:
+<pre>
+for(int h = 0 ; h &lt;= q ; h++)
+   for(int i = 0 ; i &lt;= p ; i++)
+      f[idx++] = t<sup>h</sup> x<sup>i</sup>
+</pre> </li>
+<li> 2D in space plus time: The spatial Pascal triangle multiplied by monomials in (parametric) time, 
+ordered in the following way:
+<pre>
+for(int h = 0 ; h &lt;= q ; h++)
+   for(int i = 0 ; i &lt;= p ; i++)
+      for(int j = 0 ; j &lt;= i ; j++)
+         f[idx++] = t<sup>h</sup> x<sup>(i-j)</sup> y<sup>j</sup>
+</pre> </li>
+<li> 3D: the spatial Pascal tetrahedron multiplied by monomials in (parametric) time,  ordered in 
+the following way:
+<pre>
+for(int h = 0 ; h &lt;= q ; h++)
+   for(int i = 0 ; i &lt;= p ; i++)
+      for(int j = 0 ; j &lt;= i ; j++)
+         for(int k = 0 ; k &lt;= i-j ; k++)
+            f[idx++] = t<sup>h</sup> x<sup>(i-j-k)</sup> y<sup>k</sup> z<sup>j</sup>
+</pre> </li>
+</ul>
+
+
+
+
 
 <p>
 <hr size=4 width=75%>
