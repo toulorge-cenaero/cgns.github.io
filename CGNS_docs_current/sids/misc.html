@@ -1211,6 +1211,8 @@ In absence of such a block, the standard constant per element is applied.
 <ol>
 <li> Only a single <tt>SolutionInterpolation_t</tt> node per triplet 
      (<tt>ElementType_t, SpatialOrder, TemporalOrder</tt>) is allowed per family.
+<li> Only the Basic Type is involved in the uniqueness check. Thus (TETRA_4,4,1) and (TETRA_10,4,1) are considered
+     to be the same and cannot coexist in the same family, but both are valid to describe a 4th spatial and 1st temporal order interpolation on a Tetra.
 <li> The Lagrange points in the UVW parametric space requires that the first order points 
      defining the related element points follows the convention order given in 
      <a href="conv.html#high_order">3.5 High order interpolation</a>.
