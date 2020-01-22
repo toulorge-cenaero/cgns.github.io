@@ -680,6 +680,17 @@ A <tt>Family_t</tt> data structure may be included in the
 each CFD family of the model.
 
 <p>
+A hierarchy of <tt>Family_t</tt> nodes can be build by adding a 
+<tt>Family_t</tt> node as child of an existing <tt>Family_t</tt> node.
+One can mimic an existing CAD hierarchy or add another hierarchy for
+special application purpose.
+
+<p>
+In case of a tree of <tt>Family_t</tt>, the actual reference to a family
+in the tree should follow the pattern as described in 
+<a href="cgnsbase.html#BaseLevelFamilies"><tt>Base Level Families</tt></a>.
+  
+<p>
 The <tt>Family_t</tt> structure contains all information pertinent to a
 CFD family.
 This information includes the name attribute or family name, the
@@ -702,6 +713,8 @@ it is possible to describe new basis for each element type and solutions.
     List( GeometryReference_t GeometryReference1 ... GeometryReferenceN ) ;               (o)
 
     RotatingCoordinates_t RotatingCoordinates ;                                           (o)
+
+    List( Family_t Family1 ... FamilyN ) ;                                                (o)
 
     List( FamilyName_t FamilyName1 ... FamilyNameN ) ;                                    (o)
 
@@ -758,6 +771,9 @@ it is possible to describe new basis for each element type and solutions.
 <li> Only one <tt>SolutionInterpolation_t</tt> per triplet (<tt>ElementType_t</tt>,
      <tt>SpatialOrder</tt>, <tt>TemporalOrder</tt>) is allowed. 
      see <a href="#SolutionInterpolation">SolutionInterpolation_t</a> for more.
+<li> A <tt>Family_t</tt> tree structure can be specified using the list of
+     <tt>Family_t</tt> hildren nodes. Into each of these children nodes the note #7
+     can be used to have a back tracking of the node parent.
 </ol>
 
 <p>
